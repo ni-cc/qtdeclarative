@@ -2,3 +2,6 @@
 	path = tests/manual/v4/test262
 	url = git://github.com/tronical/test262.git
 	update = none
+[submodule "examples/quick/scenegraph/openglunderqml/cross-platform-samples"]
+	path = examples/quick/scenegraph/openglunderqml/cross-platform-samples
+	url = git://github.com/ni-cc/cross-platform-samples.git
