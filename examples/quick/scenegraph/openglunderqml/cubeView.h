@@ -39,37 +39,102 @@
 **
 ****************************************************************************/
 
-#ifndef SQUIRCLE_H
-#define SQUIRCLE_H
+#ifndef CUBEVIEW_H
+#define CUBEVIEW_H
 
 #include <QtQuick/QQuickItem>
 #include <QtGui/QOpenGLShaderProgram>
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLBuffer>
 
 //! [1]
-class Squircle : public QQuickItem
+class CubeView : public QQuickItem
 {
     Q_OBJECT
 
     Q_PROPERTY(qreal t READ t WRITE setT NOTIFY tChanged)
+    Q_PROPERTY(float ScrollerWidth READ ScrollerWidth)
+    Q_PROPERTY(float ScrollerHeight READ ScrollerHeight)
+    Q_PROPERTY(qreal scrollOffsetX READ scrollOffsetX WRITE setScrollOffsetX NOTIFY scrollOffsetXChanged)
 
 public:
-    Squircle();
+    CubeView();
 
     qreal t() const { return m_t; }
     void setT(qreal t);
 
+    qreal scrollOffsetX() const { return m_scrollOffsetX; }
+    void setScrollOffsetX(qreal scrollOffsetX);
+
+    float ScrollerWidth() const { return LittleCubeWidth*NumLittleCubes; }
+    float ScrollerHeight() const { return m_ScrollerHeight; }
+
 signals:
     void tChanged();
+    void scrollOffsetXChanged();
 
 public slots:
     void paint();
     void cleanup();
     void sync();
+    void randomizeBigCube();
+    void handleLittleCubeTap(int x);
 
 private slots:
     void handleWindowChanged(QQuickWindow *win);
 
 private:
+
+    void UpdateCubes ();
+    float UpdatedRotationRadians (float radians, float speed, double elapsedTime);
+
+    const int NumLittleCubes = 20;
+    const float LittleCubeWidth = (320 / 3);
+    const float m_ScrollerHeight = LittleCubeWidth;
+    const float UnitLittleCubeWidth = 2;
+
+    QOpenGLVertexArrayObject *vertexArray;
+    QOpenGLBuffer *vertexBuffer;
+
+    struct CubeInfo
+    {
+        float Red;
+        float Green;
+        float Blue;
+        float XAxis;
+        float YAxis;
+        float ZAxis;
+        float Speed;
+        float RotationRadians;
+
+        CubeInfo (float r = 0.0f, float g = 0.0f, float b = 0.0f, float x = 0.0f, float y = 0.0f, float z = 0.0f, float s = 0.0f, float rr = 0.0f)
+        {
+            Red = r;
+            Green = g;
+            Blue = b;
+            XAxis = x;
+            YAxis = y;
+            ZAxis = z;
+            Speed = s;
+            RotationRadians = rr;
+        }
+    };
+
+    CubeInfo littleCube[20];
+    CubeInfo bigCube;
+    CubeInfo bigCubeDirections;
+
+    CubeInfo minimums;
+    CubeInfo maximums;
+    CubeInfo deltas;
+
+    double timeOfLastRenderedFrame;
+    qreal m_scrollOffsetX;
+
+    GLuint m_posAttr;
+    GLuint m_colAttr;
+    GLuint m_matrixUniform;
+
     QOpenGLShaderProgram *m_program;
 
     qreal m_t;
@@ -77,4 +142,4 @@ private:
 };
 //! [1]
 
-#endif // SQUIRCLE_H
+#endif // CUBEVIEW_H

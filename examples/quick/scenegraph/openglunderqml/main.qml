@@ -41,40 +41,52 @@
 
 //! [1]
 import QtQuick 2.0
-import OpenGLUnderQML 1.0
+import OpenGLScroller 1.0
 
 Item {
 
     width: 320
     height: 480
-
-    Squircle {
+/*
+    Square {
+        id: square
+     //   anchors.fill: root
+    }
+*/
+    CubeView {
+        id: cube
         SequentialAnimation on t {
             NumberAnimation { to: 1; duration: 2500; easing.type: Easing.InQuad }
             NumberAnimation { to: 0; duration: 2500; easing.type: Easing.OutQuad }
             loops: Animation.Infinite
             running: true
         }
+        scrollOffsetX: scrollableFrame.contentX
     }
 //! [1] //! [2]
-    Rectangle {
-        color: Qt.rgba(1, 1, 1, 0.7)
-        radius: 10
-        border.width: 1
-        border.color: "white"
-        anchors.fill: label
-        anchors.margins: -10
+    Flickable {
+        id: scrollableFrame
+        height: cube.ScrollerHeight+30
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.top: parent.top
+        contentWidth: cube.ScrollerWidth
+        contentHeight: cube.ScrollerHeight+30
+
+        MouseArea {
+            //id:
+            anchors.fill: parent
+            onClicked: cube.handleLittleCubeTap(mouseX)
+        }
     }
 
-    Text {
-        id: label
-        color: "black"
-        wrapMode: Text.WordWrap
-        text: "The background here is a squircle rendered with raw OpenGL using the 'beforeRender()' signal in QQuickWindow. This text label and its border is rendered using QML"
+    MouseArea {
+        id: bigCubeFrame
+        anchors.top: scrollableFrame.bottom
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        anchors.margins: 20
+        onClicked: cube.randomizeBigCube()
     }
 }
 //! [2]
