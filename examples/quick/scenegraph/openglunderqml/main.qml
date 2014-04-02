@@ -47,17 +47,13 @@ Item {
 
     width: 320
     height: 480
-/*
-    Square {
-        id: square
-     //   anchors.fill: root
-    }
-*/
+
+//http://blog.qt.digia.com/blog/2012/08/01/scene-graph-adaptation-layer
     CubeView {
         id: cube
         SequentialAnimation on t {
-            NumberAnimation { to: 1; duration: 2500; easing.type: Easing.InQuad }
-            NumberAnimation { to: 0; duration: 2500; easing.type: Easing.OutQuad }
+            NumberAnimation { from: 0; to: 1; duration: 2500; easing.type: Easing.Linear }
+   //         NumberAnimation { to: 0; duration: 2500; easing.type: Easing.OutQuad }
             loops: Animation.Infinite
             running: true
         }
